@@ -476,7 +476,7 @@ function SwipeScreen({ player, session, recipes, onDone }) {
     if (animating) return
     setAnimating(liked ? 'right' : 'left')
     if (liked) setLikeCount(c => c + 1)
-    await submitVote(recipe.id, liked)
+    submitVote(recipe.id, liked) // fire-and-forget; don't block UI on network
 
     setTimeout(async () => {
       setAnimating(null)
