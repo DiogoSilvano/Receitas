@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://ypaaagtdsonrfitiutlc.supabase.co'
@@ -807,6 +808,9 @@ function MatchScreen({ matches, session }) {
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
+  // Auto-reload when a new service worker takes over so users always get the latest build
+  useRegisterSW({ onNeedRefresh() { window.location.reload() } })
+
   const [screen, setScreen] = useState('loading')
   const [player, setPlayer] = useState(null)
   const [session, setSession] = useState(null)
