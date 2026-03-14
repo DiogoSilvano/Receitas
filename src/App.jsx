@@ -236,11 +236,10 @@ function SetupScreen({ onReady }) {
         .eq('household_id', HOUSEHOLD_ID)
       const excluded = (neverData || []).map(r => r.recipe_id)
 
-      // Pick random recipes
+      // Pick random recipes — fetch all IDs so every recipe has a chance
       let query = supabase
         .from('recipes')
         .select('id')
-        .limit(size * 3)
       if (excluded.length > 0) {
         query = query.not('id', 'in', `(${excluded.join(',')})`)
       }
@@ -498,8 +497,8 @@ function SwipeScreen({ player, session, recipes, onDone }) {
 
   async function handleNeverAgain() {
     if (animating) return
-    await supabase.from('never_again').upsert({ household_id: HOUSEHOLD_ID, recipe_id: recipe.id }, { onConflict: 'household_id,recipe_id' })
-    await handleVote(false)
+    supabase.from('never_again').upsert({ household_id: HOUSEHOLD_ID, recipe_id: recipe.id }, { onConflict: 'household_id,recipe_id' })
+    handleVote(false)
   }
 
   // Touch swipe
@@ -808,8 +807,8 @@ function MatchScreen({ matches, session }) {
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  // Auto-reload when a new service worker takes over so users always get the latest build
-  useRegisterSW({ onNeedRefresh() { window.location.reload() } })
+  const [updateReady, setUpdateReady] = useState(false)
+  useRegisterSW({ onNeedRefresh() { setUpdateReady(true) } })
 
   const [screen, setScreen] = useState('loading')
   const [player, setPlayer] = useState(null)
@@ -843,6 +842,14 @@ export default function App() {
 
   return (
     <div style={S.app}>
+      {updateReady && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#1a1a1a', borderTop: '1px solid #333', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 9999 }}>
+          <span style={{ color: '#ccc', fontSize: 14 }}>Nova versão disponível</span>
+          <button onClick={() => window.location.reload()} style={{ background: '#e05', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+            Atualizar
+          </button>
+        </div>
+      )}
       {screen === 'loading' && <LoadingScreen />}
       {screen === 'setup' && <SetupScreen onReady={handleReady} />}
       {screen === 'swipe' && (
