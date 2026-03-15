@@ -948,19 +948,19 @@ function ResultsScreen({ player, session, likeCount, onMatches }) {
       })
       .subscribe()
 
-    // 2. Fresh DB check — catches events that fired before we subscribed
-    supabase.from('sessions').select('completed_by').eq('id', session.id).single()
-      .then(({ data }) => {
-        if ((data?.completed_by || []).includes(otherPlayer)) resolve()
-      })
+    // 2. Fresh DB check via vote count — race-condition-proof
+    // (completed_by can be overwritten by a concurrent update; vote count never can)
+    const totalRecipes = (session.recipe_ids || []).length
+    async function checkVoteCount() {
+      const { count } = await supabase.from('votes')
+        .select('*', { count: 'exact', head: true })
+        .eq('session_id', session.id).eq('player', otherPlayer)
+      if (count >= totalRecipes) resolve()
+    }
+    checkVoteCount()
 
-    // 3. Polling fallback every 5s in case Realtime isn't enabled on this table
-    const poll = setInterval(() => {
-      supabase.from('sessions').select('completed_by').eq('id', session.id).single()
-        .then(({ data }) => {
-          if ((data?.completed_by || []).includes(otherPlayer)) resolve()
-        })
-    }, 5000)
+    // 3. Polling fallback every 5s via vote count
+    const poll = setInterval(checkVoteCount, 5000)
 
     return () => { supabase.removeChannel(channel); clearInterval(poll) }
   }, [])
