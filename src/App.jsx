@@ -1080,6 +1080,8 @@ function MatchScreen({ matches }) {
     return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]))
   }
   const shoppingList = buildShoppingList(matches)
+  console.log('[shopping] matches:', matches.map(r => ({ id: r.id, name: r.name, ingredients: r.ingredients })))
+  console.log('[shopping] list:', shoppingList)
 
   function toggleCheck(ing) {
     setChecked(s => {
@@ -1239,6 +1241,12 @@ function MatchScreen({ matches }) {
 
         {showList && (
           <div className="anim-fadeUp" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {shoppingList.length === 0 ? (
+              <div style={{
+                fontFamily: C.sans, fontSize: 14, color: C.muted,
+                textAlign: 'center', padding: '20px 0',
+              }}>Sem ingredientes disponíveis para estas receitas.</div>
+            ) : (<>
             <div style={{
               fontFamily: C.sans, fontSize: 10, color: C.dim, textAlign: 'center',
               marginBottom: 4, letterSpacing: 1.5, textTransform: 'uppercase', fontWeight: 500,
@@ -1274,6 +1282,7 @@ function MatchScreen({ matches }) {
                 </div>
               )
             })}
+            </>)}
           </div>
         )}
 
