@@ -6,7 +6,7 @@ Portuguese recipe swipe app for two people (Diogo & Sara). Tinder-style swiping,
 - React + Vite (single-file component: `src/App.jsx`)
 - Supabase backend (URL + anon key already in App.jsx)
 - PWA via vite-plugin-pwa
-- Deployed on Netlify (GitHub → auto-deploy)
+- Deployed on GitHub Pages (GitHub Actions → auto-build → deploy)
 
 ## Commands
 ```
@@ -43,4 +43,8 @@ All app logic lives in `src/App.jsx`. No separate state management, no router.
 - For UI changes: run `npm run dev` and confirm it builds before suggesting done
 
 ## Deploy
-Push to GitHub → Netlify auto-deploys. Build command: `npm run build`. Publish dir: `dist`.
+Push to GitHub → GitHub Actions builds and deploys automatically.
+Live URL: `https://diogosilvano.github.io/Receitas/`
+Workflow: `.github/workflows/deploy.yml`
+**Note:** `base: '/Receitas/'` is set in vite.config.js — required for GitHub Pages subdirectory.
+**One-time setup:** In GitHub repo Settings → Pages → Source must be set to "GitHub Actions".
