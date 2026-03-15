@@ -3,48 +3,132 @@
 Portuguese recipe swipe app for two people (Diogo & Sara). Tinder-style swiping, two-device matching via Supabase, fortnightly meal planning with shopping list generation.
 
 ## Stack
-- React + Vite (single-file component: `src/App.jsx`)
-- Supabase backend (URL + anon key already in App.jsx)
-- PWA via vite-plugin-pwa
-- Deployed on GitHub Pages (GitHub Actions → auto-build → deploy)
+- React 18 + Vite 5 (single-file component: `src/App.jsx`)
+- Supabase JS v2 for backend (URL + anon key hardcoded in App.jsx — this is intentional)
+- PWA via `vite-plugin-pwa` with `autoUpdate` register type
+- Deployed on GitHub Pages via GitHub Actions
 
 ## Commands
 ```
 npm run dev          # local preview at localhost:5173
 npm run dev -- --host  # preview on phone via local network
 npm run build        # production build → dist/
+npm run preview      # preview production build locally
 ```
 
 ## Architecture
-All app logic lives in `src/App.jsx`. No separate state management, no router.
+All app logic lives in `src/App.jsx`. No separate state management, no router, no CSS files.
 
-**Supabase tables:** `households`, `recipes` (150 rows, already seeded), `sessions`, `votes`, `never_again`
+### Key constants — NEVER change these
+```js
+HOUSEHOLD_ID    = 'diogo-sara-2025'   // fixed DB key
+PLAYERS         = ['Diogo', 'Sara']   // order matters — used for UI
+SESSION_SIZE    = 15                  // recipes per fortnightly session
+ONBOARDING_SIZE = 50                  // recipes per discovery session
+TARGET_MIN      = 6                   // min liked recipes goal
+TARGET_MAX      = 8                   // max liked recipes goal
+```
 
-**Key constants in App.jsx:**
-- `HOUSEHOLD_ID = "diogo-sara-2025"` — fixed, never change
-- `PLAYERS = ["Diogo", "Sara"]`
-- `SESSION_SIZE = 15`, `ONBOARDING_SIZE = 50`
-- `TARGET_MIN = 6`, `TARGET_MAX = 8`
+### Design tokens (`C` object)
+All colors and fonts live in the `C` constant at the top of App.jsx:
+- Dark theme: `C.bg` (`#0d0b09`) → `C.surface` → `C.raised` → `C.border`
+- Terracotta primary: `C.terra` (`#d4724a`) — Alentejo clay, used for CTAs
+- Azulejo blue: `C.azul` (`#4a9dc8`) — Atlantic Ocean accent
+- Like/nope: `C.like` (`#4fc87a`) / `C.nope` (`#e05555`)
+- Fonts: `C.serif` (Cormorant Garamond), `C.sans` (DM Sans), `C.mono` (SF Mono)
 
-**Screens:** loading → setup → swipe → results
-**Session flow:** one player creates (gets 5-char code) → partner enters code → both swipe independently → matches = both liked
+### Recipe categories (`CATS` object)
+```js
+{ Ensopado, Sopa, Peixe, Carne, Vegetariano, Massa }
+```
+Each category has `accent`, `bg`, `border`, and `emoji`. Unknown categories fall back to `DEF_CAT`.
 
-## Code style
-- Functional components, hooks only
-- Inline styles (no CSS files, no Tailwind)
-- Portuguese UI strings throughout
-- Keep everything in one file unless asked otherwise
+## Component Structure (all in App.jsx)
 
-## What Claude gets wrong
-- Never add new npm packages without asking first
-- Never split App.jsx into multiple components unless explicitly asked
-- Never change HOUSEHOLD_ID or PLAYERS array
-- Recipe data lives in Supabase — do not hardcode recipes in the app
-- For UI changes: run `npm run dev` and confirm it builds before suggesting done
+### Sub-components (module-level)
+- `Divider` — horizontal rule
+- `ErrorBubble` — animated red error message
+
+### Screens (in render order)
+1. **`LoadingScreen`** — animated logo with azulejo tile pattern, wave dots
+2. **`SetupScreen({ onReady })`** — multi-step flow: player select → session create or join
+3. **`SwipeScreen({ player, session, recipes, onDone })`** — card swipe with touch/drag support
+4. **`ResultsScreen({ player, session, likeCount, onMatches })`** — waits for partner to finish
+5. **`MatchScreen({ matches })`** — shows matched recipes + shopping list generator
+
+### Main `App` component
+Controls screen state: `loading → setup → swipe → results → matches`
+
+State shape:
+```js
+screen      // 'loading' | 'setup' | 'swipe' | 'results' | 'matches'
+player      // 'Diogo' | 'Sara'
+session     // Supabase session row
+recipes     // ordered array from session.recipe_ids
+likeCount   // how many the local player liked
+matches     // recipes both players liked
+```
+
+## Session Flow
+
+1. **Create**: Player selects name → chooses mode (quinzena/discovery) → app fetches recipe pool excluding `never_again` → inserts session row with shuffled recipe IDs → shows 5-char code
+2. **Join**: Partner enters code → app fetches session + recipes in `recipe_ids` order → both proceed to swipe
+3. **Swipe**: Each vote is upserted to `votes` table; on last card, player is added to `sessions.completed_by`
+4. **Sync detection**: `ResultsScreen` uses a Supabase realtime channel + polling interval to detect when both players have voted. Completion is checked by counting total vote rows (`votes` table count ≥ `session_size × 2`), NOT by `completed_by` array — this is race-proof
+5. **Matches**: Votes where both players `liked = true` for the same recipe
+
+## Supabase Tables
+
+| Table | Key columns |
+|-------|-------------|
+| `households` | `id` |
+| `recipes` | `id`, `title`, `category`, `ingredients`, `prep_time`, `servings`, `description` |
+| `sessions` | `id` (5-char code), `household_id`, `recipe_ids` (array), `completed_by` (array), `fortnightly` (bool) |
+| `votes` | `session_id`, `player`, `recipe_id`, `liked` (bool) — upserted per vote |
+| `never_again` | `household_id`, `recipe_id` — unique constraint on both |
+
+Recipe data has 150 rows already seeded. Do not hardcode recipes in the app.
+
+## Features
+
+### Session modes
+- **Quinzena** (fortnightly): 15 recipes, `fortnightly: true`
+- **Descoberta** (discovery): 50 recipes, `fortnightly: false`
+
+### Never Again
+Swipe up or tap "Nunca mais" on a recipe → upserts to `never_again` table → excluded from future recipe pools.
+
+### Shopping List
+In `MatchScreen`: toggle between match tiles and full shopping list. Ingredients are parsed from all matched recipes, deduplicated, and rendered as a checklist. Items can be tapped to mark as checked (strikethrough).
+
+### PWA
+- `useRegisterSW` hook detects service worker updates
+- Shows an "Atualizar app" banner when update is available
+- `manifest.webmanifest` is external (not generated by vite-plugin-pwa — `manifest: false`)
+
+## CSS / Styling Conventions
+- All styles are inline JS objects — no CSS files, no Tailwind
+- Global CSS (resets, keyframe animations, font imports) injected once at module load via `document.createElement('style')`
+- Animations: `fadeUp`, `fadeIn`, `cardIn`, `popIn`, `dotWave`, `spin`, `tileBreath`
+- CSS classes: `.anim-fadeUp`, `.anim-fadeIn`, `.anim-cardIn`, `.anim-popIn`, `.tap` (active scale effect)
+- Touch interactions: `onTouchStart`, `onTouchMove`, `onTouchEnd` in `SwipeScreen`
 
 ## Deploy
-Push to GitHub → GitHub Actions builds and deploys automatically.
-Live URL: `https://diogosilvano.github.io/Receitas/`
-Workflow: `.github/workflows/deploy.yml`
-**Note:** `base: '/Receitas/'` is set in vite.config.js — required for GitHub Pages subdirectory.
-**One-time setup:** In GitHub repo Settings → Pages → Source must be set to "GitHub Actions".
+Push to `main` → GitHub Actions builds and deploys automatically.
+
+- Live URL: `https://diogosilvano.github.io/Receitas/`
+- Workflow: `.github/workflows/deploy.yml` (Node 20, `npm ci && npm run build`, uploads `dist/`)
+- `base: '/Receitas/'` in `vite.config.js` — required for GitHub Pages subdirectory
+- One-time setup: GitHub repo Settings → Pages → Source must be "GitHub Actions"
+
+## What Claude Gets Wrong
+
+- **Never add new npm packages** without asking first
+- **Never split App.jsx** into multiple files/components unless explicitly asked
+- **Never change `HOUSEHOLD_ID` or `PLAYERS`** array
+- **Never hardcode recipes** — recipe data lives in Supabase
+- **Use Portuguese** for all UI strings
+- **Inline styles only** — no CSS files, no Tailwind classes
+- **Run `npm run build`** to verify no build errors before declaring a UI change done
+- **Completion detection** uses vote count, not `completed_by` array — don't revert this
+- The Supabase anon key in the source is intentional — it's a public key with row-level security
