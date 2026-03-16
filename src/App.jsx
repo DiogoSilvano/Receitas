@@ -49,6 +49,153 @@ const CATS = {
 const DEF_CAT = { accent: '#c8b49a', bg: '#181410', border: '#2b2420', emoji: '🍴' }
 const getcat = t => CATS[t] || DEF_CAT
 
+// ─── UK Ingredient substitutions ─────────────────────────────────────────────
+const UK_SUBS = {
+  'abóbora':              'pumpkin',
+  'açafrão':              'saffron',
+  'agriões':              'watercress',
+  'alecrim':              'rosemary',
+  'alheiras':             'garlic sausage',
+  'amêijoas':             'clams',
+  'amêndoa laminada':     'flaked almonds',
+  'aranjas':              'oranges',
+  'arroz':                'rice',
+  'azeite':               'olive oil',
+  'azeitonas':            'olives',
+  'bacalhau':             'fresh cod',
+  'base massa quebrada':  'shortcrust pastry',
+  'batata palha':         'matchstick crisps',
+  'batatas':              'potatoes',
+  'berbigão':             'cockles',
+  'beringela':            'aubergine',
+  'beringelas':           'aubergines',
+  'bifes de atum':        'tuna steaks',
+  'bifes de vaca':        'beef steaks',
+  'borrego':              'lamb',
+  'broa':                 'cornbread loaf',
+  'brócolos':             'broccoli',
+  'cabra':                'goat meat',
+  'cabrito':              'kid goat',
+  'caldo de carne':       'beef stock',
+  'camarão':              'prawns',
+  'canelones':            'cannelloni',
+  'carne':                'meat',
+  'carne de porco':       'pork',
+  'carne de vaca':        'beef',
+  'carne picada':         'minced meat',
+  'castanha':             'chestnuts',
+  'cebola':               'onion',
+  'cebolas':              'onions',
+  'cenoura':              'carrot',
+  'cenouras':             'carrots',
+  'cherne':               'grouper',
+  'chouriço':             'chorizo',
+  'coentros':             'coriander',
+  'cogumelos':            'mushrooms',
+  'colorau':              'paprika',
+  'cominhos':             'cumin',
+  'costeletas de borrego': 'lamb chops',
+  'costelinha de porco':  'pork ribs',
+  'courgette':            'courgette',
+  'couve':                'cabbage',
+  'couve galega':         'cavolo nero',
+  'couve-flor':           'cauliflower',
+  'dente de alho':        'garlic clove',
+  'dentes de alho':       'garlic cloves',
+  'dobrada':              'beef tripe',
+  'dourada':              'sea bream',
+  'entrecosto':           'pork ribs',
+  'ervilhas':             'peas',
+  'esparguete':           'spaghetti',
+  'espinafres':           'spinach',
+  'farinha':              'flour',
+  'farinheira':           'smoked pork sausage',
+  'fatias de pão':        'bread slices',
+  'fatias de presunto':   'ham slices',
+  'fatias de queijo':     'cheese slices',
+  'fatias pão':           'bread slices',
+  'feijão':               'beans',
+  'feijão branco':        'white beans',
+  'feijão manteiga':      'butter beans',
+  'feijão verde':         'green beans',
+  'filetes de pescada':   'hake fillets',
+  'folha de louro':       'bay leaf',
+  'frango':               'chicken',
+  'gambas':               'king prawns',
+  'gengibre':             'ginger',
+  'grão cozido':          'cooked chickpeas',
+  'grelos':               'turnip greens',
+  'hortelã':              'mint',
+  'lata de atum':         'canned tuna',
+  'latas de sardinha':    'canned sardines',
+  'leite de coco':        'coconut milk',
+  'lentilhas':            'lentils',
+  'limão':                'lemon',
+  'lombo de porco':       'pork loin',
+  'lulas':                'squid',
+  'lulas grandes':        'large squid',
+  'macarrão':             'macaroni',
+  'maionese':             'mayonnaise',
+  'manjericão':           'basil',
+  'massa':                'pasta',
+  'massa lasanha':        'lasagne sheets',
+  'mel':                  'honey',
+  'mexilhão':             'mussels',
+  'molho bechamel':       'béchamel sauce',
+  'molho espargos':       'asparagus sauce',
+  'morcela':              'black pudding',
+  'mostarda':             'mustard',
+  'nabo':                 'turnip',
+  'natas':                'double cream',
+  'orelha':               'pork ear',
+  'orelha de porco':      'pork ear',
+  'ovos':                 'eggs',
+  'ovos cozidos':         'boiled eggs',
+  'pãezinhos':            'bread rolls',
+  'pão':                  'bread',
+  'pão ralado':           'breadcrumbs',
+  'pato':                 'duck',
+  'peitos de frango':     'chicken breasts',
+  'peixe':                'fish',
+  'pepino':               'cucumber',
+  'perdiz':               'partridge',
+  'pimenta':              'black pepper',
+  'pimentão':             'paprika',
+  'pimento':              'bell pepper',
+  'pimentos':             'bell peppers',
+  'pinhões':              'pine nuts',
+  'polvo':                'octopus',
+  'postas de salmão':     'salmon steaks',
+  'presunto':             'cured ham',
+  'queijo':               'cheese',
+  'queijo parmesão':      'parmesan',
+  'rabo de boi':          'oxtail',
+  'robalo':               'sea bass',
+  'rúcula':               'rocket',
+  'sal':                  'salt',
+  'salsa':                'parsley',
+  'sangue':               'pork blood',
+  'tamboril':             'monkfish',
+  'tinta de lula':        'squid ink',
+  'tomate':               'tomato',
+  'tomates':              'tomatoes',
+  'tomilho':              'thyme',
+  'tripas':               'tripe',
+  'coelho':               'rabbit',
+  'vinagre':              'vinegar',
+  'vinho':                'wine',
+  'vinho branco':         'white wine',
+  'vinho tinto':          'red wine',
+  'vitela':               'veal',
+}
+
+// ─── Amazon / Alexa config ────────────────────────────────────────────────────
+// To enable: register your app at developer.amazon.com/loginwithamazon
+// and add https://diogosilvano.github.io/Receitas/ as an Allowed Return URL
+const AMAZON_CLIENT_ID   = ''  // paste your LWA Client ID here
+const AMAZON_REDIRECT_URI = 'https://diogosilvano.github.io/Receitas/'
+const ALEXA_API_BASE     = 'https://api.eu.amazonalexa.com'  // EU / UK endpoint
+
 function generateCode() {
   return Math.random().toString(36).substring(2, 7).toUpperCase()
 }
@@ -128,6 +275,119 @@ function ErrorBubble({ msg }) {
       background: C.nopeGlow, color: C.nope,
       fontFamily: C.sans, fontSize: 13, textAlign: 'center',
     }}>{msg}</div>
+  )
+}
+
+// ─── ExportResultOverlay ──────────────────────────────────────────────────────
+function ExportResultOverlay({ result, onClose }) {
+  if (!result) return null
+  const isAlexa = result.destination === 'alexa'
+  return (
+    <div className="anim-fadeIn" onClick={onClose} style={{
+      position: 'fixed', inset: 0, zIndex: 1000,
+      display: 'flex', alignItems: 'flex-end',
+      background: 'rgba(0,0,0,0.72)',
+    }}>
+      <div className="anim-fadeUp" onClick={e => e.stopPropagation()} style={{
+        width: '100%', maxHeight: '80vh',
+        background: C.surface,
+        borderTop: `1.5px solid ${C.border}`,
+        borderRadius: '20px 20px 0 0',
+        padding: '24px 20px 32px',
+        overflowY: 'auto',
+      }}>
+        {/* Drag handle */}
+        <div style={{
+          width: 36, height: 4, borderRadius: 2, background: C.mid,
+          margin: '0 auto 20px',
+        }} />
+
+        {result.error ? (
+          <div style={{ textAlign: 'center', padding: '12px 0' }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
+            <div style={{ fontFamily: C.sans, color: C.nope, fontSize: 14, lineHeight: 1.5 }}>
+              {result.error}
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Success header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                background: isAlexa ? 'rgba(0,202,255,0.12)' : 'rgba(0,83,159,0.15)',
+                border: `1.5px solid ${isAlexa ? 'rgba(0,202,255,0.25)' : 'rgba(0,83,159,0.3)'}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {isAlexa ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="#00CAFF" strokeWidth="2"/>
+                    <path d="M6 12a6 6 0 0112 0" stroke="#00CAFF" strokeWidth="2.5" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="#ffffff" strokeWidth="1.5" strokeOpacity="0.5"/>
+                    <line x1="7" y1="8" x2="17" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="12" y1="8" x2="12" y2="17" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                )}
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: C.serif, fontSize: 22, fontWeight: 600,
+                  letterSpacing: -0.4, color: C.text,
+                }}>
+                  {result.count} {result.count === 1 ? 'item' : 'items'} added
+                </div>
+                <div style={{ fontFamily: C.sans, fontSize: 13, color: C.muted, marginTop: 3 }}>
+                  {isAlexa
+                    ? 'Added to your Alexa shopping list'
+                    : `${result.count} Tesco search tabs opened`}
+                </div>
+              </div>
+            </div>
+
+            {/* Substitutions */}
+            {result.substitutions?.length > 0 && (
+              <>
+                <div style={{
+                  fontFamily: C.sans, fontSize: 10, color: C.dim,
+                  letterSpacing: 1.5, textTransform: 'uppercase', fontWeight: 500,
+                  marginBottom: 8,
+                }}>UK substitutions made</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 8 }}>
+                  {result.substitutions.map(s => (
+                    <div key={s.original} style={{
+                      display: 'flex', alignItems: 'center', gap: 8,
+                      padding: '9px 12px', borderRadius: 10,
+                      background: C.raised, border: `1px solid ${C.border}`,
+                      fontFamily: C.sans, fontSize: 13,
+                    }}>
+                      <span style={{ color: C.muted, flex: 1 }}>{s.original}</span>
+                      <span style={{ color: C.dim, flexShrink: 0 }}>→</span>
+                      <span style={{ color: C.text, fontWeight: 500, flex: 1, textAlign: 'right' }}>{s.replacement}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {result.substitutions?.length === 0 && (
+              <div style={{
+                fontFamily: C.sans, fontSize: 13, color: C.dim,
+                textAlign: 'center', padding: '4px 0 8px',
+              }}>No substitutions needed</div>
+            )}
+          </>
+        )}
+
+        <button className="tap" onClick={onClose} style={{
+          marginTop: 16, width: '100%', padding: '14px',
+          borderRadius: 12, border: `1.5px solid ${C.border}`,
+          background: C.raised, color: C.muted,
+          fontFamily: C.sans, fontSize: 14, fontWeight: 600, cursor: 'pointer',
+        }}>Close</button>
+      </div>
+    </div>
   )
 }
 
@@ -1066,9 +1326,28 @@ function ResultsScreen({ player, session, likeCount, onMatches }) {
 
 // ─── MatchScreen ──────────────────────────────────────────────────────────────
 function MatchScreen({ matches }) {
-  const [showList, setShowList]   = useState(false)
-  const [checked, setChecked]     = useState(new Set())
-  const [expandedId, setExpandedId] = useState(null)
+  const [showList, setShowList]       = useState(false)
+  const [checked, setChecked]         = useState(new Set())
+  const [expandedId, setExpandedId]   = useState(null)
+  const [amazonToken, setAmazonToken] = useState(() => sessionStorage.getItem('amazon_token'))
+  const [exportResult, setExportResult] = useState(null)
+  const [alexaLoading, setAlexaLoading] = useState(false)
+  const [tescoLoading, setTescoLoading] = useState(false)
+  const alexaCallbackRef = useRef(null)
+
+  // Listen for Amazon OAuth popup postMessage
+  useEffect(() => {
+    function onMsg(e) {
+      if (e.origin !== window.location.origin) return
+      if (e.data?.type !== 'amazon_oauth') return
+      if (alexaCallbackRef.current) {
+        alexaCallbackRef.current(e.data.code, e.data.state)
+        alexaCallbackRef.current = null
+      }
+    }
+    window.addEventListener('message', onMsg)
+    return () => window.removeEventListener('message', onMsg)
+  }, [])
 
   function parseIngredient(str) {
     str = str.trim()
@@ -1097,6 +1376,157 @@ function MatchScreen({ matches }) {
     return Object.values(map).sort((a, b) => a.name.localeCompare(b.name))
   }
   const shoppingList = buildShoppingList(matches)
+
+  // ── UK translation pipeline ──────────────────────────────────────────────
+  function translateForUK(items) {
+    const substitutions = []
+    const translated = items.map(item => {
+      const ukName = UK_SUBS[item.name]
+      if (ukName && ukName !== item.name) {
+        substitutions.push({ original: item.name, replacement: ukName })
+        return { ...item, name: ukName }
+      }
+      return item
+    })
+    return { items: translated, substitutions }
+  }
+
+  // ── Tesco ────────────────────────────────────────────────────────────────
+  function handleTesco(recipesToUse) {
+    setTescoLoading(true)
+    const list = buildShoppingList(recipesToUse)
+    const { items: translated, substitutions } = translateForUK(list)
+    translated.forEach(item => {
+      window.open(
+        `https://www.tesco.com/groceries/en-GB/search?query=${encodeURIComponent(item.name)}`,
+        '_blank'
+      )
+    })
+    setTescoLoading(false)
+    setExportResult({ destination: 'tesco', count: translated.length, substitutions })
+  }
+
+  // ── Alexa OAuth + Lists API ──────────────────────────────────────────────
+  async function generatePKCE() {
+    const arr = new Uint8Array(32)
+    crypto.getRandomValues(arr)
+    const verifier = btoa(String.fromCharCode(...arr))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))
+    const challenge = btoa(String.fromCharCode(...new Uint8Array(hash)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+    return { verifier, challenge }
+  }
+
+  async function sendToAlexa(token, items, substitutions) {
+    try {
+      const listsRes = await fetch(`${ALEXA_API_BASE}/v2/householdlists`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (listsRes.status === 401) {
+        sessionStorage.removeItem('amazon_token')
+        setAmazonToken(null)
+        throw new Error('Alexa session expired — please sign in again.')
+      }
+      if (!listsRes.ok) throw new Error(`Alexa API error: ${listsRes.status}`)
+      const listsData = await listsRes.json()
+      const list = listsData.lists?.find(l =>
+        l.name?.toLowerCase().includes('shopping') || l.name?.toLowerCase().includes('alexa')
+      )
+      if (!list) throw new Error('Alexa shopping list not found')
+      const listId = list.listId
+      await Promise.all(items.map(item => {
+        const label = item.qty > 0 ? `${fmtQty(item.qty)}${item.unit} ${item.name}` : item.name
+        return fetch(`${ALEXA_API_BASE}/v2/householdlists/${listId}/items`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value: label, status: 'active' }),
+        })
+      }))
+      setExportResult({ destination: 'alexa', count: items.length, substitutions })
+    } catch (err) {
+      setExportResult({ destination: 'alexa', count: 0, error: err.message })
+    } finally {
+      setAlexaLoading(false)
+    }
+  }
+
+  async function startAlexaAuth(items, substitutions) {
+    if (!AMAZON_CLIENT_ID) {
+      setAlexaLoading(false)
+      setExportResult({ destination: 'alexa', count: 0, error: 'Amazon Client ID not configured. See AMAZON_CLIENT_ID in App.jsx.' })
+      return
+    }
+    const { verifier, challenge } = await generatePKCE()
+    const state = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2))
+    sessionStorage.setItem('amazon_pkce_verifier', verifier)
+    sessionStorage.setItem('amazon_oauth_state', state)
+
+    const params = new URLSearchParams({
+      client_id: AMAZON_CLIENT_ID,
+      scope: 'alexa::household:lists_readwrite',
+      response_type: 'code',
+      redirect_uri: AMAZON_REDIRECT_URI,
+      state,
+      code_challenge: challenge,
+      code_challenge_method: 'S256',
+    })
+
+    const popup = window.open(
+      `https://www.amazon.com/ap/oa?${params}`,
+      'amazon-auth',
+      'width=520,height=700,left=100,top=80'
+    )
+
+    alexaCallbackRef.current = async (code, returnedState) => {
+      const savedState = sessionStorage.getItem('amazon_oauth_state')
+      const codeVerifier = sessionStorage.getItem('amazon_pkce_verifier')
+      if (popup && !popup.closed) popup.close()
+      if (returnedState !== savedState) {
+        setExportResult({ destination: 'alexa', count: 0, error: 'Authentication failed: state mismatch.' })
+        setAlexaLoading(false)
+        return
+      }
+      try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/amazon-token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SUPABASE_KEY}` },
+          body: JSON.stringify({ code, code_verifier: codeVerifier }),
+        })
+        const data = await res.json()
+        if (!data.access_token) throw new Error(data.error_description || 'Token exchange failed')
+        const token = data.access_token
+        sessionStorage.setItem('amazon_token', token)
+        setAmazonToken(token)
+        await sendToAlexa(token, items, substitutions)
+      } catch (err) {
+        setExportResult({ destination: 'alexa', count: 0, error: err.message })
+        setAlexaLoading(false)
+      }
+    }
+
+    // Clean up if popup is closed without completing auth
+    const poll = setInterval(() => {
+      if (popup?.closed) {
+        clearInterval(poll)
+        if (alexaCallbackRef.current) {
+          alexaCallbackRef.current = null
+          setAlexaLoading(false)
+        }
+      }
+    }, 1000)
+  }
+
+  async function handleAlexa(recipesToUse) {
+    setAlexaLoading(true)
+    const list = buildShoppingList(recipesToUse)
+    const { items: translated, substitutions } = translateForUK(list)
+    if (amazonToken) {
+      await sendToAlexa(amazonToken, translated, substitutions)
+    } else {
+      await startAlexaAuth(translated, substitutions)
+    }
+  }
 
   function toggleCheck(ing) {
     setChecked(s => {
@@ -1146,6 +1576,7 @@ function MatchScreen({ matches }) {
   }
 
   return (
+    <>
     <div style={{
       minHeight: '100dvh', background: C.bg, color: C.text, fontFamily: C.sans,
       display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -1253,6 +1684,35 @@ function MatchScreen({ matches }) {
                       borderLeft: `2px solid ${c.accent}50`,
                     }}>{ing}</div>
                   ))}
+                  {/* Per-recipe export buttons */}
+                  <div style={{ display: 'flex', gap: 7, marginTop: 8 }} onClick={e => e.stopPropagation()}>
+                    <button className="tap" onClick={() => handleAlexa([r])} style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      gap: 6, padding: '9px 10px', borderRadius: 10, border: 'none',
+                      background: '#131921', cursor: 'pointer',
+                      fontFamily: C.sans, fontSize: 12, fontWeight: 600, color: '#00CAFF',
+                      opacity: alexaLoading ? 0.5 : 1,
+                    }} disabled={alexaLoading}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="6.5" stroke="#00CAFF" strokeWidth="1.5"/>
+                        <path d="M4 8a4 4 0 018 0" stroke="#00CAFF" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      Add to Alexa
+                    </button>
+                    <button className="tap" onClick={() => handleTesco([r])} style={{
+                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      gap: 6, padding: '9px 10px', borderRadius: 10, border: 'none',
+                      background: '#00539F', cursor: 'pointer',
+                      fontFamily: C.sans, fontSize: 12, fontWeight: 600, color: 'white',
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="6.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
+                        <line x1="4.5" y1="5.5" x2="11.5" y2="5.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="8" y1="5.5" x2="8" y2="11.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      Add to Tesco
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1338,6 +1798,42 @@ function MatchScreen({ matches }) {
                 </div>
               )
             })}
+
+            {/* Full-list export buttons */}
+            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <button className="tap" onClick={() => handleAlexa(matches)} style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 8, padding: '13px 14px', borderRadius: 12, border: 'none',
+                background: '#131921', cursor: 'pointer',
+                fontFamily: C.sans, fontSize: 13, fontWeight: 600, color: '#00CAFF',
+                opacity: alexaLoading ? 0.5 : 1,
+                boxShadow: '0 2px 12px rgba(0,202,255,0.12)',
+              }} disabled={alexaLoading}>
+                {alexaLoading ? (
+                  <span style={{ display: 'inline-block', animation: 'spin 0.8s linear infinite' }}>↻</span>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink: 0 }}>
+                    <circle cx="9" cy="9" r="7.5" stroke="#00CAFF" strokeWidth="1.5"/>
+                    <path d="M4.5 9a4.5 4.5 0 019 0" stroke="#00CAFF" strokeWidth="2.2" strokeLinecap="round"/>
+                  </svg>
+                )}
+                Add to Alexa
+              </button>
+              <button className="tap" onClick={() => handleTesco(matches)} style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 8, padding: '13px 14px', borderRadius: 12, border: 'none',
+                background: '#00539F', cursor: 'pointer',
+                fontFamily: C.sans, fontSize: 13, fontWeight: 600, color: 'white',
+                boxShadow: '0 2px 12px rgba(0,83,159,0.25)',
+              }}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink: 0 }}>
+                  <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
+                  <line x1="5" y1="6.5" x2="13" y2="6.5" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                  <line x1="9" y1="6.5" x2="9" y2="13" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+                Add to Tesco
+              </button>
+            </div>
             </>)}
           </div>
         )}
@@ -1354,6 +1850,9 @@ function MatchScreen({ matches }) {
 
       </div>
     </div>
+
+    <ExportResultOverlay result={exportResult} onClose={() => setExportResult(null)} />
+    </>
   )
 }
 
@@ -1370,6 +1869,15 @@ export default function App() {
   const [matches, setMatches]   = useState([])
 
   useEffect(() => {
+    // If loaded inside an Amazon OAuth popup, relay the code back to the parent and close
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    const state = params.get('state')
+    if (window.opener && code && state) {
+      window.opener.postMessage({ type: 'amazon_oauth', code, state }, window.location.origin)
+      window.close()
+      return
+    }
     const t = setTimeout(() => setScreen('setup'), 700)
     return () => clearTimeout(t)
   }, [])
