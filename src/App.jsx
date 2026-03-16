@@ -1066,22 +1066,37 @@ function ResultsScreen({ player, session, likeCount, onMatches }) {
 
 // ─── MatchScreen ──────────────────────────────────────────────────────────────
 function MatchScreen({ matches }) {
-  const [showList, setShowList] = useState(false)
-  const [checked, setChecked]   = useState(new Set())
+  const [showList, setShowList]   = useState(false)
+  const [checked, setChecked]     = useState(new Set())
+  const [expandedId, setExpandedId] = useState(null)
+
+  function parseIngredient(str) {
+    str = str.trim()
+    const numM = str.match(/^(\d+(?:[.,]\d+)?)\s*/)
+    if (!numM) return { qty: null, unit: '', name: str.toLowerCase() }
+    const qty = parseFloat(numM[1].replace(',', '.'))
+    const rest = str.slice(numM[0].length)
+    const unitM = rest.match(/^(kg|mg|dl|cl|ml|gr|g|l)\b\s*/i)
+    const unit = unitM ? unitM[1].toLowerCase() : ''
+    let name = unitM ? rest.slice(unitM[0].length) : rest
+    name = name.replace(/^de\s+/i, '').replace(/^d'/i, '').trim().toLowerCase()
+    return { qty, unit, name }
+  }
 
   function buildShoppingList(recipes) {
-    const counts = {}
+    const map = {}
     for (const r of recipes) {
-      for (const ing of (r.ingredients || [])) {
-        const key = ing.toLowerCase().split(' ').slice(0, 2).join(' ')
-        counts[key] = (counts[key] || 0) + 1
+      for (const raw of (r.ingredients || [])) {
+        const { qty, unit, name } = parseIngredient(raw)
+        const key = `${name}::${unit}`
+        if (!map[key]) map[key] = { name, unit, qty: 0, count: 0 }
+        if (qty !== null) map[key].qty += qty
+        map[key].count++
       }
     }
-    return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]))
+    return Object.values(map).sort((a, b) => a.name.localeCompare(b.name))
   }
   const shoppingList = buildShoppingList(matches)
-  console.log('[shopping] matches:', matches.map(r => ({ id: r.id, name: r.name, ingredients: r.ingredients })))
-  console.log('[shopping] list:', shoppingList)
 
   function toggleCheck(ing) {
     setChecked(s => {
@@ -1094,6 +1109,10 @@ function MatchScreen({ matches }) {
   const isGoodPlan    = matches.length >= TARGET_MIN
   const checkedCount  = checked.size
   const shoppingTotal = shoppingList.length
+
+  function fmtQty(n) {
+    return Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ',')
+  }
 
   if (matches.length === 0) {
     return (
@@ -1161,13 +1180,15 @@ function MatchScreen({ matches }) {
         {/* Match list */}
         {matches.map((r, i) => {
           const c = getcat(r.tipo)
+          const isExpanded = expandedId === r.id
           return (
             <div key={r.id} className="anim-fadeUp" style={{
               background: c.bg, borderRadius: 16,
               border: `1.5px solid ${c.border}`,
               overflow: 'hidden',
               animationDelay: `${i * 0.05}s`,
-            }}>
+              cursor: 'pointer',
+            }} onClick={() => setExpandedId(id => id === r.id ? null : r.id)}>
               {/* Category colour stripe */}
               <div style={{
                 height: 4,
@@ -1193,16 +1214,47 @@ function MatchScreen({ matches }) {
                     fontFamily: C.sans, fontSize: 11, fontWeight: 600, marginTop: 5,
                   }}>{r.tipo}</div>
                 </div>
-                {r.recipe_url && (
-                  <a href={r.recipe_url} target="_blank" rel="noopener noreferrer" style={{
-                    color: c.accent, fontFamily: C.sans, fontSize: 13, fontWeight: 700,
-                    textDecoration: 'none', flexShrink: 0,
-                    padding: '7px 13px', borderRadius: 9,
-                    background: c.accent + '18',
-                    border: `1px solid ${c.accent}30`,
-                  }}>Ver →</a>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                  {r.recipe_url && (
+                    <a href={r.recipe_url} target="_blank" rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{
+                        color: c.accent, fontFamily: C.sans, fontSize: 13, fontWeight: 700,
+                        textDecoration: 'none',
+                        padding: '7px 13px', borderRadius: 9,
+                        background: c.accent + '18',
+                        border: `1px solid ${c.accent}30`,
+                      }}>Ver →</a>
+                  )}
+                  <span style={{
+                    color: C.muted, fontSize: 14,
+                    display: 'inline-block',
+                    transition: 'transform 0.2s',
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0)',
+                  }}>▾</span>
+                </div>
               </div>
+              {isExpanded && (r.ingredients || []).length > 0 && (
+                <div style={{
+                  padding: '0 16px 14px',
+                  display: 'flex', flexDirection: 'column', gap: 5,
+                  borderTop: `1px solid ${c.border}`,
+                  marginTop: 2,
+                }}>
+                  <div style={{
+                    fontFamily: C.sans, fontSize: 10, color: C.dim,
+                    letterSpacing: 1.2, textTransform: 'uppercase', fontWeight: 500,
+                    paddingTop: 10, paddingBottom: 2,
+                  }}>Ingredientes</div>
+                  {(r.ingredients || []).map((ing, j) => (
+                    <div key={j} style={{
+                      fontFamily: C.sans, fontSize: 13, color: C.muted,
+                      paddingLeft: 8,
+                      borderLeft: `2px solid ${c.accent}50`,
+                    }}>{ing}</div>
+                  ))}
+                </div>
+              )}
             </div>
           )
         })}
@@ -1251,10 +1303,14 @@ function MatchScreen({ matches }) {
               fontFamily: C.sans, fontSize: 10, color: C.dim, textAlign: 'center',
               marginBottom: 4, letterSpacing: 1.5, textTransform: 'uppercase', fontWeight: 500,
             }}>Toca para marcar como comprado</div>
-            {shoppingList.map(([ing, count]) => {
-              const done = checked.has(ing)
+            {shoppingList.map((item) => {
+              const key = `${item.name}::${item.unit}`
+              const done = checked.has(key)
+              const label = item.qty > 0
+                ? `${fmtQty(item.qty)}${item.unit} ${item.name}`
+                : item.name
               return (
-                <div key={ing} onClick={() => toggleCheck(ing)} style={{
+                <div key={key} onClick={() => toggleCheck(key)} style={{
                   display: 'flex', alignItems: 'center', gap: 12,
                   padding: '11px 14px', borderRadius: 12,
                   background: done ? 'transparent' : C.raised,
@@ -1276,8 +1332,8 @@ function MatchScreen({ matches }) {
                     flex: 1, fontFamily: C.sans, fontSize: 14, color: C.text,
                     textDecoration: done ? 'line-through' : 'none',
                   }}>
-                    {count > 1 && <span style={{ color: C.muted, marginRight: 6 }}>×{count}</span>}
-                    {ing}
+                    {item.qty === 0 && item.count > 1 && <span style={{ color: C.muted, marginRight: 6 }}>×{item.count}</span>}
+                    {label}
                   </div>
                 </div>
               )
